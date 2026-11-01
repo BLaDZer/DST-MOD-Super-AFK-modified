@@ -65,15 +65,82 @@ AddTaskSet(
 	}
 )
 
-local extraoverrides = {
+AddTask("MinimalCaveStart", {
+	locks = {},
+	keys_given = {
+		KEYS.CAVE,
+		KEYS.TIER1,
+		-- MoonCaveForest (locks MOONMUSH) -> gives ARCHIVE -> ArchiveMaze (archive_start has the archive_portal needed by the Vault layout)
+		KEYS.MOONMUSH,
+	},
+
+	room_choices = {
+		["LightPlantField"] = 1,
+		["FernGully"] = 1,
+		["PitRoom"] = 1,
+	},
+
+	background_room = "BGMud",
+	room_bg = WORLD_TILES.MUD,
+
+	colour = {
+		r = 0.6,
+		g = 0.4,
+		b = 0.0,
+		a = 0.9,
+	},
+})
+
+AddTask("MinimalCaveExit", {
+	locks = { LOCKS.CAVE },
+	keys_given = {},
+
+	room_choices = {
+		["CaveExitRoom"] = 1,
+		["RabbitArea"] = 1,
+	},
+
+	background_room = "BGSinkhole",
+	room_bg = WORLD_TILES.SINKHOLE,
+
+	colour = {
+		r = 0.0,
+		g = 0.5,
+		b = 0.0,
+		a = 0.9,
+	},
+})
+
+AddTaskSet("minimal_caves", {
+	name = "Minimal Caves",
+	location = "cave",
+
+	tasks = {
+		"MinimalCaveStart",
+		"MoonCaveForest",
+		"ArchiveMaze",
+		"MinimalCaveExit",
+	},
+
+	numoptionaltasks = 0,
+	optionaltasks = {},
+
+	valid_start_tasks = {
+		"MinimalCaveStart",
+	},
+
+	-- required prefabs are already declared by the ArchiveMaze task; duplicating them here doubles the expected counts
+	required_prefabs = {},
+	set_pieces = {},
+})
+
+local forest_overrides = {
 	start_location = "EmptyStart",
 	task_set = "emptytaskset",
 	wormhole_prefab = "wormhole",
 	islands = "never",
 	layout_mode = "LinkNodesByKeys",
 	keep_disconnected_tiles = true,
-	-- layout_mode = "RestrictNodesByKey",
-	--weather  =  "never",
 	creepyeyes = "always",
 	boons = "never",
 	day = "onlynight", --"onlynight",onlyday
@@ -97,35 +164,39 @@ local extraoverrides = {
 	weather = "never"
 }
 
+local cave_overrides = {
+	task_set = "minimal_caves",
+
+	world_size = "small",
+	branching = "least",
+	loop = "never",
+
+	touchstone = "never",
+	boons = "never",
+	regrowth = "never",
+	basicresource_regrowth = "none",
+	sinkhole_lights = "veryslow",
+	traps = "never",
+	poi = "never",
+	protected = "never"
+}
+
+local location_overrides = {
+	forest = forest_overrides,
+	cave = cave_overrides
+}
+
 local function Task(Level)
-	-- if tasksetdata.location ~= "forest" then
-	-- 	return tasksetdata
-	-- end
-
-	-- tasksetdata.numoptionaltasks = 0
-	-- tasksetdata.optionaltasks = {}
-	-- tasksetdata.valid_start_tasks = {"EmptyMap"}
-	-- tasksetdata.set_pieces = {}
-	-- tasksetdata.random_set_pieces = {}
-	-- -- tasksetdata.ordered_story_setpieces = {}
-	-- tasksetdata.ocean_prefill_setpieces = {}
-	-- tasksetdata.ocean_population = {}
-	-- tasksetdata.numrandom_set_pieces = 0
-
-	-- -- tasksetdata.background_node_range = {0, 0}
-
-	-- tasksetdata.required_prefabs = {}
-	-- tasksetdata.required_setpieces = {}
-
 	local overrides = Level.overrides or {}
-	for k, v in pairs(extraoverrides) do
+
+	for k, v in pairs(location_overrides[Level.location] or {}) do
 		overrides[k] = v
 	end
+
 	Level.overrides = overrides
 
 	return Level
 end
--- AddTaskSetPreInitAny(Task)
 
 AddGlobalClassPostConstruct(
 	"map/level",
@@ -141,7 +212,7 @@ local WorldSettings_Overrides = require("worldsettings_overrides")
 local Pre = WorldSettings_Overrides.Pre
 local Post = WorldSettings_Overrides.Post
 
-for k, v in pairs(extraoverrides) do
+for k, v in pairs(forest_overrides) do
 	local target = Pre
 	local oldfn = target[k]
 	if oldfn == nil then

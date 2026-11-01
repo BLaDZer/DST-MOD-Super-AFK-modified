@@ -25,7 +25,7 @@ original mod: https://steamcommunity.com/sharedfiles/filedetails/?id=1981709850
 
 ]]
 author = "Nana ツ & Instant Noodles & other excellent modders"
-version = "1.0.7"
+version = "1.0.8"
 version_compatible = "1.0.6"
 all_clients_require_mod = true
 dst_compatible = true

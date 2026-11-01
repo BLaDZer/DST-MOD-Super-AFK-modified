@@ -20,5 +20,5 @@ Modifications:
 - Make architectures undestroyable (disabled by default)
 
 References:
-Super AFK by Nana ツ: (https://steamcommunity.com/sharedfiles/filedetails/?id=1981709850)[workshop-1981709850]
-Drops Reset Countdown by Instant Noodles: (https://steamcommunity.com/sharedfiles/filedetails/?id=1688661034)[workshop-1688661034]
+ - Super AFK by Nana ツ: [workshop-1981709850](https://steamcommunity.com/sharedfiles/filedetails/?id=1981709850)
+ - Drops Reset Countdown by Instant Noodles: [workshop-1688661034](https://steamcommunity.com/sharedfiles/filedetails/?id=1688661034)
